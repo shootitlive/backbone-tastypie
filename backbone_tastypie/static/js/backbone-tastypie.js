@@ -106,12 +106,10 @@
 			url = url || this.collection && ( _.isFunction( this.collection.url ) ? this.collection.url() : this.collection.url );
 
 			if ( url && this.has( 'id' ) ) {
-				url = addSlash( url ) + this.get( 'id' );
+				url = joinUrl( url, this.get('id') );
 			}
 		}
 
-		url = url && addSlash( url );
-		
 		return url || null;
 	};
 	
@@ -141,7 +139,6 @@
 			var model = models && models.length && models[ 0 ];
 			url = model && ( _.isFunction( model.urlRoot ) ? model.urlRoot() : model.urlRoot );
 		}
-		url = url && addSlash( url );
 		
 		// Build a url to retrieve a set of models. This assume the last part of each model's idAttribute
 		// (set to 'resource_uri') contains the model's id.
@@ -156,7 +153,11 @@
 		return url || null;
 	};
 
-	var addSlash = function( str ) {
-		return str + ( ( str.length > 0 && str.charAt( str.length - 1 ) === '/' ) ? '' : '/' );
+	var joinUrl = function() {
+		var args = _.map(Array.prototype.slice.call(arguments), function(arg) {
+			return arg.replace(/([/]*$)/g, '');
+		});
+
+		return args.join('/');
 	};
 })();
